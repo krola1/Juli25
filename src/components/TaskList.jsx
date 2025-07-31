@@ -1,6 +1,7 @@
 import TaskCard from "./TaskCard";
 export default function TaskList({ tasks, onDelete, onToggleComplete }) {
   console.log(tasks);
+  console.log(tasks);
 
   return (
     <ul>

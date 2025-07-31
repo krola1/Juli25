@@ -10,7 +10,8 @@ export default function TaskContainer() {
     return savedList ? JSON.parse(savedList) : [];
   });
   const [text, setText] = useState("");
-  const [showCompleted, setShowCompleted] = useState(true);
+  const [showCompleted, setShowCompleted] = useState(false);
+  const [sortAsc, setSortAsc] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(list));
@@ -23,6 +24,7 @@ export default function TaskContainer() {
         id: crypto.randomUUID(),
         text: text,
         completed: false,
+        createdAt: Date.now(),
       };
       setList([...list, newTask]);
       setText("");
@@ -42,11 +44,19 @@ export default function TaskContainer() {
   };
   // creates a new instance of the list
   const filteredList = useMemo(() => {
-    return showCompleted ? list : list.filter((task) => !task.completed);
-  }, [list, showCompleted]);
+    const visible = showCompleted
+      ? list
+      : list.filter((task) => !task.completed);
+    return [...visible].sort((a, b) =>
+      sortAsc ? a.createdAt - b.createdAt : b.createdAt - a.createdAt
+    );
+  }, [list, showCompleted, sortAsc]);
 
   return (
     <>
+      <button onClick={() => setSortAsc(!sortAsc)}>
+        {sortAsc ? "Vis nyeste" : "Vis eldste"}
+      </button>
       <ToggleCompleted
         showCompleted={showCompleted}
         setShowCompleted={setShowCompleted}

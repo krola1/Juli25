@@ -4,9 +4,13 @@ export default function TaskCard({
   completed,
   onDelete,
   onToggleComplete,
+  createdAt,
 }) {
+  const date = new Date(createdAt).toLocaleString();
+
   return (
     <div style={{ border: "solid white" }}>
+      <p>{date}</p>
       <h3>{text}</h3>
       <input
         checked={completed}
