@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import TaskList from "./TaskList";
 import TaskInput from "./TaskInput";
 import ToggleCompleted from "./ToggleCompleted";
 
 export default function TaskContainer() {
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(() => {
+    const savedList = localStorage.getItem("tasks");
+    return savedList ? JSON.parse(savedList) : [];
+  });
   const [text, setText] = useState("");
   const [showCompleted, setShowCompleted] = useState(true);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(list));
+  }, [list]);
 
   //creates task element and updates list
   const updateList = () => {
@@ -34,9 +41,9 @@ export default function TaskContainer() {
     );
   };
   // creates a new instance of the list
-  const filteredList = showCompleted
-    ? list
-    : list.filter((task) => !task.completed);
+  const filteredList = useMemo(() => {
+    return showCompleted ? list : list.filter((task) => !task.completed);
+  }, [list, showCompleted]);
 
   return (
     <>
